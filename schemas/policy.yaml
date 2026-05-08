@@ -1,0 +1,103 @@
+# llm-policy-guard example policy
+# This policy blocks PII, secrets, jailbreaks, and unsafe content categories.
+
+name: production-policy
+version: "1.0"
+description: "Default production policy for LLM API layer"
+default_action: block
+audit_all: false
+
+rules:
+
+  - id: pii-block-input
+    name: "Block PII in user inputs"
+    category: pii
+    description: "Prevent users from submitting PII that will be stored or sent to LLMs"
+    enabled: true
+    action: redact
+    direction: input
+    severity: high
+    config:
+      patterns:
+        - ssn
+        - credit_card
+        - email
+        - phone_us
+
+  - id: pii-redact-output
+    name: "Redact PII leaking in LLM outputs"
+    category: pii
+    description: "Ensure the LLM does not return PII extracted from its training data or context"
+    enabled: true
+    action: redact
+    direction: output
+    severity: high
+    config:
+      patterns:
+        - ssn
+        - credit_card
+        - email
+
+  - id: secrets-block-all
+    name: "Block secrets in any direction"
+    category: secrets
+    description: "Prevent API keys, tokens, and credentials from passing through the LLM layer"
+    enabled: true
+    action: block
+    direction: both
+    severity: critical
+    config:
+      patterns:
+        - openai_key
+        - anthropic_key
+        - aws_access_key
+        - github_token
+        - jwt
+        - private_key_pem
+        - bearer_token
+        - generic_secret
+      entropy_check: true
+
+  - id: jailbreak-block-input
+    name: "Block jailbreak attempts in user inputs"
+    category: jailbreak
+    description: "Detect and block prompt injection, role override, and safety bypass attempts"
+    enabled: true
+    action: block
+    direction: input
+    severity: critical
+    config:
+      patterns:
+        - dan_mode
+        - ignore_instructions
+        - role_override
+        - control_token
+        - system_prompt_extract
+        - dev_mode
+
+  - id: content-unsafe
+    name: "Block unsafe content categories"
+    category: content
+    description: "Block content related to WMD, CSAM, hate speech, and self-harm"
+    enabled: true
+    action: block
+    direction: both
+    severity: critical
+    config:
+      categories:
+        - weapons_of_mass_destruction
+        - csam
+        - hate_speech
+        - self_harm
+
+  - id: content-malware
+    name: "Flag malware generation requests"
+    category: content
+    description: "Flag requests to generate ransomware, keyloggers, or other malicious code"
+    enabled: true
+    action: flag
+    direction: input
+    severity: high
+    config:
+      categories:
+        - malware
