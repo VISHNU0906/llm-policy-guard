@@ -42,11 +42,11 @@ except PolicyBlockedError as e:
 
 AI governance is a primitive problem. Every org running LLMs in production needs:
 
-- **PII control** — stop SSNs, credit cards, and emails from flowing through LLMs and into logs
-- **Secrets protection** — block API keys and credentials from being accidentally sent to external LLM APIs
-- **Jailbreak defense** — catch "ignore all instructions" attacks before they reach the model
-- **Content categories** — block WMD synthesis, CSAM, hate speech at the API layer
-- **Audit trail** — JSONL log of every decision for compliance review
+- **PII control** :  stop SSNs, credit cards, and emails from flowing through LLMs and into logs
+- **Secrets protection** :  block API keys and credentials from being accidentally sent to external LLM APIs
+- **Jailbreak defense** :  catch "ignore all instructions" attacks before they reach the model
+- **Content categories** :  block WMD synthesis, CSAM, hate speech at the API layer
+- **Audit trail** :  JSONL log of every decision for compliance review
 
 Existing solutions (Azure AI Content Safety, AWS Bedrock Guardrails) are cloud-locked, expensive, and opaque. `llm-policy-guard` is a small, MIT-licensed Python primitive you own and run.
 
@@ -169,7 +169,7 @@ Detects and redacts personally identifiable information:
 
 ### Secrets (`category: secrets`)
 
-Detects credentials — blocks by default, never logs matched values:
+Detects credentials :  blocks by default, never logs matched values:
 
 | Pattern | Detects |
 |---------|---------|
@@ -317,7 +317,7 @@ PRs welcome. When adding a new detection pattern:
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT :  see [LICENSE](LICENSE).
 
 ---
 
